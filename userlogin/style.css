@@ -795,6 +795,12 @@ box-shadow:
     font-size:1rem;
 }
 
+#submissionMessage {
+    background:#ffffff;
+    color:#0f1720;
+    border-color:rgba(15,23,32,0.16);
+}
+
 .popup-form textarea{
     min-height:120px;
     resize:vertical;
@@ -804,6 +810,12 @@ box-shadow:
 .popup-form select,
 .popup-form textarea::placeholder{
     color:#cbd5e1;
+}
+
+.student-submission select,
+.student-submission select option {
+    color:#ffffff;
+    background:#0f1720;
 }
 
 .captcha-row{
