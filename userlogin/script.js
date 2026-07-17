@@ -38,6 +38,32 @@ togglePassword.addEventListener("click", () => {
 // LOGIN VALIDATION
 // ==============================
 
+function getStoredStudents() {
+    const stored = localStorage.getItem("studentAccounts");
+    if (!stored) {
+        const defaultStudents = [{ username: "student", password: "1234" }];
+        localStorage.setItem("studentAccounts", JSON.stringify(defaultStudents));
+        return defaultStudents;
+    }
+
+    try {
+        const parsed = JSON.parse(stored);
+        if (!Array.isArray(parsed)) {
+            throw new Error("Invalid student accounts format");
+        }
+        return parsed;
+    } catch (error) {
+        const defaultStudents = [{ username: "student", password: "1234" }];
+        localStorage.setItem("studentAccounts", JSON.stringify(defaultStudents));
+        return defaultStudents;
+    }
+}
+
+function isValidStudent(username, password) {
+    const students = getStoredStudents();
+    return students.some(student => student.username === username && student.password === password);
+}
+
 loginForm.addEventListener("submit", function (e) {
 
     e.preventDefault();
@@ -48,6 +74,25 @@ loginForm.addEventListener("submit", function (e) {
     // Demo Login
 
     if (user === "admin" && pass === "1234") {
+
+        sessionStorage.setItem("userRole", "admin");
+
+        message.style.color = "#00ff99";
+        message.innerHTML = "✔ Login Successful";
+
+        loginButton.innerHTML = "Loading...";
+        loginButton.disabled = true;
+
+        setTimeout(() => {
+
+            window.location.href = "admin.html";
+
+        }, 1200);
+
+    }
+    else if (isValidStudent(user, pass)) {
+
+        sessionStorage.setItem("userRole", "student");
 
         message.style.color = "#00ff99";
         message.innerHTML = "✔ Login Successful";

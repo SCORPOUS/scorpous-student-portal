@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        .admin-container {
+            position: relative;
+            max-width: 860px;
+            margin: 100px auto 60px;
+            background: rgba(9, 9, 20, 0.92);
+            border-radius: 30px;
+            padding: 28px 32px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.22);
+            backdrop-filter: blur(18px);
+            z-index: 2;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .admin-header h1 {
+            font-size: 2.1rem;
+            margin: 0;
+            color: #00ff99;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 24px 0 16px;
+        }
+
+        .admin-actions input {
+            flex: 1;
+            min-width: 240px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+        }
+
+        .admin-actions button,
+        .admin-header button {
+            border: none;
+            padding: 14px 24px;
+            border-radius: 12px;
+            background: #00ff99;
+            color: #0a0b12;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform .2s ease, background .2s ease;
+        }
+
+        .admin-actions button:hover,
+        .admin-header button:hover {
+            transform: translateY(-1px);
+            background: #00ea87;
+        }
+
+        .file-list {
+            display: grid;
+            gap: 14px;
+            margin-top: 12px;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .file-item span {
+            font-size: 0.95rem;
+        }
+
+        .file-item button {
+            background: #ff4d4d;
+            color: #fff;
+            border-radius: 12px;
+            padding: 10px 16px;
+        }
+
+        .student-list {
+            display: grid;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .student-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .student-item span {
+            font-size: 0.95rem;
+        }
+
+        .student-item button {
+            background: #ff4d4d;
+            color: #fff;
+            border-radius: 12px;
+            padding: 10px 16px;
+        }
+
+        .admin-message {
+            margin-top: 18px;
+            color: #00ff99;
+            font-size: 0.95rem;
+            min-height: 22px;
+        }
+
+        @media (max-width: 720px) {
+            .admin-container {
+                margin: 60px 18px;
+                padding: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="background"></div>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <div>
+                <h1>Admin Dashboard</h1>
+                <p style="color:#cfd6ff; margin:6px 0 0;">Only admin users can access this panel.</p>
+            </div>
+            <button id="logoutButton">Logout</button>
+        </div>
+
+        <p style="color:#d8e2ff; margin-top:18px;">This demo page shows admin-only controls. Admin can also open subject pages to upload notes directly to each subject.</p>
+
+        <div class="subject-links" style="display:flex; gap:12px; flex-wrap:wrap; margin:20px 0;">
+            <a href="physics.html" class="subject-link" style="display:inline-flex; align-items:center; gap:8px; padding:12px 18px; border-radius:14px; background:#00b7ff; color:#0a0b12; text-decoration:none; font-weight:600;">Physics</a>
+            <a href="maths.html" class="subject-link" style="display:inline-flex; align-items:center; gap:8px; padding:12px 18px; border-radius:14px; background:#00ff99; color:#0a0b12; text-decoration:none; font-weight:600;">Maths</a>
+            <a href="chemistry.html" class="subject-link" style="display:inline-flex; align-items:center; gap:8px; padding:12px 18px; border-radius:14px; background:#ffcb00; color:#0a0b12; text-decoration:none; font-weight:600;">Chemistry</a>
+        </div>
+
+        <div class="admin-actions">
+            <input type="text" id="newFileName" placeholder="New file name">
+            <button id="uploadButton">Upload File</button>
+        </div>
+
+        <div class="file-list" id="fileList"></div>
+
+        <div style="margin-top: 36px;">
+            <h2 style="color:#cfd6ff; margin-bottom:14px;">Student Management</h2>
+            <div class="admin-actions">
+                <input type="text" id="newStudentName" placeholder="Student username">
+                <input type="password" id="newStudentPassword" placeholder="Student password">
+                <button id="addStudentButton">Add Student</button>
+            </div>
+            <div class="student-list" id="studentList"></div>
+        </div>
+
+        <p class="admin-message" id="adminMessage"></p>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+
+</html>

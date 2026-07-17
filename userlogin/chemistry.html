@@ -45,7 +45,14 @@
       const unitsGrid = document.getElementById("unitsGrid");
       const notesForm = document.getElementById("notesForm");
       const noteFilesInput = document.getElementById("noteFiles");
+      const uploadCard = document.querySelector(".upload-card");
+      const userRole = sessionStorage.getItem("userRole") || "";
+      const isAdmin = userRole === "admin";
       let noteStore = {};
+
+      if (!userRole) {
+        window.location.href = "index.html";
+      }
 
       function loadStore() {
         try {
@@ -64,6 +71,16 @@
           const unitName = `Unit ${index + 1}`;
           return `<option value="${unitName}">${unitName}</option>`;
         }).join("");
+      }
+
+      function updateUploadAccess() {
+        if (!isAdmin) {
+          notesForm.querySelector("h2").textContent = "View only — admin can upload";
+          noteFilesInput.disabled = true;
+          unitSelect.disabled = true;
+          notesForm.querySelector("button").disabled = true;
+          uploadCard.style.opacity = "0.65";
+        }
       }
 
       function readFileAsDataURL(file) {
@@ -92,7 +109,7 @@
           ${preview}
           <div class="note-actions">
             <a href="${note.data}" download="${note.name}" class="note-link">Download</a>
-            <button type="button" class="remove-note-btn" data-unit="${unitName}" data-id="${note.id}">Remove</button>
+            ${isAdmin ? `<button type="button" class="remove-note-btn" data-unit="${unitName}" data-id="${note.id}">Remove</button>` : ""}
           </div>
         `;
 
@@ -132,6 +149,10 @@
       notesForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
+        if (!isAdmin) {
+          return;
+        }
+
         const files = Array.from(noteFilesInput.files || []);
         if (files.length === 0) {
           return;
@@ -158,6 +179,10 @@
       });
 
       unitsGrid.addEventListener("click", (event) => {
+        if (!isAdmin) {
+          return;
+        }
+
         const button = event.target.closest(".remove-note-btn");
         if (!button) {
           return;
@@ -176,6 +201,7 @@
 
       loadStore();
       buildUnitOptions();
+      updateUploadAccess();
       renderUnits();
     </script>
   </body>
