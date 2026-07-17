@@ -5,6 +5,7 @@ const addStudentButton = document.getElementById("addStudentButton");
 const newStudentNameInput = document.getElementById("newStudentName");
 const newStudentPasswordInput = document.getElementById("newStudentPassword");
 const studentListElement = document.getElementById("studentList");
+const submissionsListElement = document.getElementById("submissionsList");
 const adminMessage = document.getElementById("adminMessage");
 const logoutButton = document.getElementById("logoutButton");
 
@@ -26,8 +27,14 @@ let students = JSON.parse(localStorage.getItem("studentAccounts")) || [
     { username: "student", password: "1234" }
 ];
 
+let submissions = JSON.parse(localStorage.getItem("studentSubmissions")) || [];
+
 function saveStudents() {
     localStorage.setItem("studentAccounts", JSON.stringify(students));
+}
+
+function saveSubmissions() {
+    localStorage.setItem("studentSubmissions", JSON.stringify(submissions));
 }
 
 function renderFiles() {
@@ -74,6 +81,32 @@ function showMessage(text, color = "#00ff99") {
     setTimeout(() => {
         adminMessage.textContent = "";
     }, 3000);
+}
+
+function renderSubmissions() {
+    submissionsListElement.innerHTML = "";
+
+    if (submissions.length === 0) {
+        submissionsListElement.innerHTML = "<p style='color:#cfd6ff;'>No submissions yet.</p>";
+        return;
+    }
+
+    submissions.forEach(submission => {
+        const item = document.createElement("div");
+        item.className = "submission-item";
+        item.innerHTML = `
+            <div class="submission-meta">
+                <div>
+                    <strong>${submission.student}</strong>
+                    <p style="margin: 6px 0 0; color:#cfd6ff;">${submission.subject} · ${submission.unit}</p>
+                </div>
+                <span>${new Date(submission.submittedAt).toLocaleString()}</span>
+            </div>
+            <p style="margin: 12px 0 12px; color:#e5e9ff;">${submission.message}</p>
+            <button data-id="${submission.id}">Remove</button>
+        `;
+        submissionsListElement.appendChild(item);
+    });
 }
 
 uploadButton.addEventListener("click", () => {
@@ -142,6 +175,17 @@ studentListElement.addEventListener("click", event => {
     showMessage(`Student "${removedStudent.username}" removed.`);
 });
 
+submissionsListElement.addEventListener("click", event => {
+    const button = event.target.closest("button");
+    if (!button) return;
+
+    const id = button.getAttribute("data-id");
+    submissions = submissions.filter(submission => submission.id !== id);
+    saveSubmissions();
+    renderSubmissions();
+    showMessage("Submission removed.");
+});
+
 logoutButton.addEventListener("click", () => {
     sessionStorage.removeItem("userRole");
     window.location.href = "index.html";
@@ -149,3 +193,5 @@ logoutButton.addEventListener("click", () => {
 
 renderFiles();
 renderStudents();
+renderSubmissions();
+renderSubmissions();

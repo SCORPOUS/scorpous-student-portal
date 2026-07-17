@@ -21,7 +21,7 @@ content="width=device-width, initial-scale=1.0">
 <div id="welcomePage">
 
     <h1 class="welcome-title">
-        Welcome RK 👋
+        Welcome Guys 
     </h1>
 
     <p class="welcome-text">
@@ -33,6 +33,28 @@ content="width=device-width, initial-scale=1.0">
         <h2>Study smarter with RK</h2>
         <p>Welcome to the SRM Notes Portal — join now for subject notes, unit downloads, and fast access to your physics, maths, and chemistry files.</p>
         <span class="notice-tag">Powered by RK</span>
+    </div>
+
+    <div class="student-submission" id="studentSubmissionSection">
+        <h3>Submit to Admin</h3>
+        <form id="submissionForm">
+            <label for="submissionSubject">Subject</label>
+            <select id="submissionSubject">
+                <option value="">Choose subject</option>
+                <option value="Physics">Physics</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="Chemistry">Chemistry</option>
+            </select>
+
+            <label for="submissionUnit">Unit</label>
+            <select id="submissionUnit"></select>
+
+            <label for="submissionMessage">Message</label>
+            <textarea id="submissionMessage" rows="4" placeholder="Describe what you want to submit..."></textarea>
+
+            <button type="submit">Send to Admin</button>
+            <p class="submission-feedback" id="submissionFeedback"></p>
+        </form>
     </div>
 
     <div class="subjects">
@@ -63,6 +85,29 @@ content="width=device-width, initial-scale=1.0">
 
     </div>
 
+</div>
+
+<div class="popup-overlay" id="welcomePopup">
+    <div class="popup-panel">
+        <button class="popup-close" id="closePopup">×</button>
+        <h2>Fill Your Details</h2>
+        <form class="popup-form">
+            <input type="text" placeholder="Name" aria-label="Name">
+            <input type="tel" placeholder="Phone" aria-label="Phone">
+            <input type="email" placeholder="Email" aria-label="Email">
+            <select aria-label="Course type">
+                <option value="">Course type</option>
+                <option value="physics">Physics</option>
+                <option value="maths">Mathematics</option>
+                <option value="chemistry">Chemistry</option>
+            </select>
+            <div class="captcha-row">
+                <span>What is 7 + 8 ?</span>
+                <input type="text" placeholder="Type your answer" aria-label="Captcha answer">
+            </div>
+            <button type="button" class="popup-submit">Submit</button>
+        </form>
+    </div>
 </div>
 <script src="welcome.js"></script>
 </body>

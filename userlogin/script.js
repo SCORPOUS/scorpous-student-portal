@@ -76,6 +76,7 @@ loginForm.addEventListener("submit", function (e) {
     if (user === "admin" && pass === "1234") {
 
         sessionStorage.setItem("userRole", "admin");
+        sessionStorage.setItem("username", user);
 
         message.style.color = "#00ff99";
         message.innerHTML = "✔ Login Successful";
@@ -93,6 +94,7 @@ loginForm.addEventListener("submit", function (e) {
     else if (isValidStudent(user, pass)) {
 
         sessionStorage.setItem("userRole", "student");
+        sessionStorage.setItem("username", user);
 
         message.style.color = "#00ff99";
         message.innerHTML = "✔ Login Successful";
