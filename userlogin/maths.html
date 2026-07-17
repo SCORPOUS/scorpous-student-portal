@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mathematics Notes</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="notes-page">
+    <div class="background"></div>
+    <div class="circle c1"></div>
+    <div class="circle c2"></div>
+    <div class="circle c3"></div>
+    <div class="circle c4"></div>
+
+    <div class="notes-shell">
+      <div class="page-header">
+        <a href="welcome.html" class="back-btn">⬅ Back</a>
+        <div>
+          <h1>∑ Mathematics Notes</h1>
+          <p>Upload and organize notes by unit from Unit 1 to Unit 10.</p>
+        </div>
+      </div>
+
+      <div class="notes-panel">
+        <form class="upload-card" id="notesForm">
+          <h2>Upload Notes</h2>
+          <label for="unitSelect">Choose Unit</label>
+          <select id="unitSelect"></select>
+
+          <label for="noteFiles">Select Files</label>
+          <input type="file" id="noteFiles" multiple accept=".pdf,.jpg,.jpeg,.png,.txt,.doc,.docx" />
+
+          <button type="submit">Upload</button>
+        </form>
+
+        <div class="units-grid" id="unitsGrid"></div>
+      </div>
+    </div>
+
+    <script>
+      const STORAGE_KEY = "maths-notes-store";
+      const unitCount = 10;
+      const unitSelect = document.getElementById("unitSelect");
+      const unitsGrid = document.getElementById("unitsGrid");
+      const notesForm = document.getElementById("notesForm");
+      const noteFilesInput = document.getElementById("noteFiles");
+      let noteStore = {};
+
+      function loadStore() {
+        try {
+          noteStore = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+        } catch (error) {
+          noteStore = {};
+        }
+      }
+
+      function saveStore() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(noteStore));
+      }
+
+      function buildUnitOptions() {
+        unitSelect.innerHTML = Array.from({ length: unitCount }, (_, index) => {
+          const unitName = `Unit ${index + 1}`;
+          return `<option value="${unitName}">${unitName}</option>`;
+        }).join("");
+      }
+
+      function readFileAsDataURL(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(reader.error);
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function createNoteCard(note, unitName) {
+        const item = document.createElement("div");
+        item.className = "note-item";
+
+        const isImage = note.type && note.type.startsWith("image/");
+        const preview = isImage
+          ? `<img src="${note.data}" alt="${note.name}" />`
+          : "";
+
+        item.innerHTML = `
+          <div class="note-meta">
+            <strong>${note.name}</strong>
+            <span>${Math.round(note.size / 1024)} KB</span>
+          </div>
+          ${preview}
+          <div class="note-actions">
+            <a href="${note.data}" download="${note.name}" class="note-link">Download</a>
+            <button type="button" class="remove-note-btn" data-unit="${unitName}" data-id="${note.id}">Remove</button>
+          </div>
+        `;
+
+        return item;
+      }
+
+      function renderUnits() {
+        unitsGrid.innerHTML = "";
+
+        for (let i = 1; i <= unitCount; i += 1) {
+          const unitName = `Unit ${i}`;
+          const notes = noteStore[unitName] || [];
+
+          const card = document.createElement("article");
+          card.className = "unit-card";
+          card.innerHTML = `
+            <div class="unit-title">
+              <h3>${unitName}</h3>
+              <span>${notes.length} file${notes.length === 1 ? "" : "s"}</span>
+            </div>
+          `;
+
+          const list = document.createElement("div");
+          list.className = "note-list";
+
+          if (notes.length === 0) {
+            list.innerHTML = '<p class="empty-text">No notes added yet.</p>';
+          } else {
+            notes.forEach((note) => list.appendChild(createNoteCard(note, unitName)));
+          }
+
+          card.appendChild(list);
+          unitsGrid.appendChild(card);
+        }
+      }
+
+      notesForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const files = Array.from(noteFilesInput.files || []);
+        if (files.length === 0) {
+          return;
+        }
+
+        const selectedUnit = unitSelect.value;
+        const existingNotes = noteStore[selectedUnit] || [];
+
+        for (const file of files) {
+          const data = await readFileAsDataURL(file);
+          existingNotes.push({
+            id: `${file.name}-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            data,
+          });
+        }
+
+        noteStore[selectedUnit] = existingNotes;
+        saveStore();
+        renderUnits();
+        notesForm.reset();
+      });
+
+      unitsGrid.addEventListener("click", (event) => {
+        const button = event.target.closest(".remove-note-btn");
+        if (!button) {
+          return;
+        }
+
+        const { unit, id } = button.dataset;
+        noteStore[unit] = (noteStore[unit] || []).filter((note) => note.id !== id);
+
+        if (noteStore[unit].length === 0) {
+          delete noteStore[unit];
+        }
+
+        saveStore();
+        renderUnits();
+      });
+
+      loadStore();
+      buildUnitOptions();
+      renderUnits();
+    </script>
+  </body>
+</html>
