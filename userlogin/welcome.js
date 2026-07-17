@@ -143,34 +143,42 @@ window.addEventListener("load", () => {
 const welcomePopup = document.getElementById('welcomePopup');
 const closePopup = document.getElementById('closePopup');
 const popupForm = document.querySelector('.popup-form');
-const popupSubmit = document.querySelector('.popup-submit');
-const savedUsername = sessionStorage.getItem('username') || 'Unknown Student';
+const savedUsername = sessionStorage.getItem('username') || '';
 
-if (closePopup && welcomePopup) {
-    closePopup.addEventListener('click', () => {
-        welcomePopup.classList.add('hidden');
-    });
+function closeWelcomePopup() {
+    if (welcomePopup) {
+        welcomePopup.classList.remove('show');
+    }
+}
 
+if (closePopup) {
+    closePopup.addEventListener('click', closeWelcomePopup);
+}
+
+if (welcomePopup) {
     welcomePopup.addEventListener('click', (event) => {
         if (event.target === welcomePopup) {
-            welcomePopup.classList.add('hidden');
+            closeWelcomePopup();
         }
     });
 }
 
-if (popupSubmit && popupForm) {
+if (popupForm) {
     const popupName = popupForm.querySelector('input[aria-label="Name"]');
     const popupPhone = popupForm.querySelector('input[aria-label="Phone"]');
     const popupEmail = popupForm.querySelector('input[aria-label="Email"]');
     const popupCourse = popupForm.querySelector('select[aria-label="Course type"]');
     const popupCaptcha = popupForm.querySelector('input[aria-label="Captcha answer"]');
     const popupFeedback = document.createElement('p');
+    popupFeedback.className = 'popup-feedback';
     popupFeedback.style.marginTop = '12px';
     popupFeedback.style.fontSize = '0.95rem';
     popupFeedback.style.color = '#00ff99';
     popupForm.appendChild(popupFeedback);
 
-    popupSubmit.addEventListener('click', () => {
+    popupForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
         const nameValue = popupName ? popupName.value.trim() : '';
         const phoneValue = popupPhone ? popupPhone.value.trim() : '';
         const emailValue = popupEmail ? popupEmail.value.trim() : '';
@@ -192,7 +200,7 @@ if (popupSubmit && popupForm) {
         const submissions = JSON.parse(localStorage.getItem('studentSubmissions') || '[]');
         submissions.push({
             id: `request-${Date.now()}-${Math.random().toString(16).slice(2)}`,
-            student: savedUsername !== 'Unknown Student' ? savedUsername : nameValue,
+            student: savedUsername || nameValue,
             name: nameValue,
             phone: phoneValue,
             email: emailValue,
@@ -208,8 +216,14 @@ if (popupSubmit && popupForm) {
         popupFeedback.style.color = '#00ff99';
         popupForm.reset();
 
-        setTimeout(() => {
-            welcomePopup.classList.add('hidden');
-        }, 1400);
+        setTimeout(closeWelcomePopup, 1200);
     });
 }
+
+window.addEventListener('load', () => {
+    if (welcomePopup) {
+        setTimeout(() => {
+            welcomePopup.classList.add('show');
+        }, 500);
+    }
+});

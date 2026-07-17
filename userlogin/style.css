@@ -725,21 +725,29 @@ box-shadow:
 .popup-overlay{
     position:fixed;
     inset:0;
-    background:rgba(0,0,0,0.6);
+    background:rgba(0,0,0,0.8);
     display:flex;
     align-items:center;
     justify-content:center;
     padding:24px;
     z-index:999;
+    opacity:0;
+    visibility:hidden;
+    transition:opacity .25s ease, visibility .25s ease;
+}
+
+.popup-overlay.show{
+    opacity:1;
+    visibility:visible;
 }
 
 .popup-panel{
-    width:min(480px,100%);
-    background:#101018;
-    border:2px solid #e63946;
-    border-radius:20px;
-    padding:28px 28px 24px;
-    box-shadow:0 30px 70px rgba(0,0,0,0.45);
+    width:min(520px,100%);
+    background:#0f1720;
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:32px;
+    padding:30px 28px;
+    box-shadow:0 35px 90px rgba(0,0,0,0.45);
     position:relative;
 }
 
@@ -747,20 +755,25 @@ box-shadow:
     position:absolute;
     top:16px;
     right:16px;
-    width:36px;
-    height:36px;
+    width:40px;
+    height:40px;
     border:none;
     border-radius:50%;
     background:rgba(255,255,255,0.12);
     color:white;
-    font-size:1.4rem;
+    font-size:1.3rem;
     cursor:pointer;
+    transition:background .2s ease;
+}
+
+.popup-close:hover{
+    background:rgba(255,255,255,0.22);
 }
 
 .popup-panel h2{
-    color:#ff6d6d;
+    color:#ff7a7a;
     margin:0 0 18px;
-    font-size:2rem;
+    font-size:2.2rem;
     text-align:center;
 }
 
@@ -771,25 +784,32 @@ box-shadow:
 }
 
 .popup-form input,
-.popup-form select{
+.popup-form select,
+.popup-form textarea{
     width:100%;
     padding:14px 16px;
-    border-radius:14px;
+    border-radius:16px;
     border:1px solid rgba(255,255,255,0.18);
-    background:rgba(255,255,255,0.05);
+    background:rgba(255,255,255,0.06);
     color:white;
     font-size:1rem;
 }
 
+.popup-form textarea{
+    min-height:120px;
+    resize:vertical;
+}
+
 .popup-form input::placeholder,
-.popup-form select{
+.popup-form select,
+.popup-form textarea::placeholder{
     color:#cbd5e1;
 }
 
 .captcha-row{
     background:rgba(255,255,255,0.08);
-    padding:14px 16px;
-    border-radius:14px;
+    padding:16px;
+    border-radius:16px;
     display:flex;
     flex-direction:column;
     gap:10px;
@@ -798,22 +818,25 @@ box-shadow:
 
 .popup-submit{
     border:none;
-    border-radius:14px;
-    background:#e63946;
-    color:white;
-    padding:14px;
+    border-radius:18px;
+    background:linear-gradient(90deg, #ff5f7b, #ffb84d);
+    color:#050816;
+    padding:16px;
     font-size:1rem;
+    font-weight:700;
     cursor:pointer;
-    transition:transform .2s ease, background .2s ease;
+    transition:transform .2s ease, filter .2s ease;
 }
 
 .popup-submit:hover{
-    background:#ff2f5a;
-    transform:translateY(-1px);
+    filter:brightness(1.05);
+    transform:translateY(-2px);
 }
 
 .popup-overlay.hidden{
-    display:none;
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
 }
 
 .student-submission{
